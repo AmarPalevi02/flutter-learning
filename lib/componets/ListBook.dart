@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 Center ListBook({required img, required judul, required kBuku, required tglBeli, required prodi, required kondisi, required jenis}) {
   return Center(
@@ -58,7 +59,7 @@ Center ListBook({required img, required judul, required kBuku, required tglBeli,
               ),
                Container(
                 child: Text(
-                  'Tanggal Beli : $tglBeli',
+                  'tanggal beli : ${DateFormat('dd MMM yyyy').format(DateTime.parse(tglBeli.toString()))}',
                   textAlign: TextAlign.justify,
                   style: TextStyle(
                     fontSize: 20,

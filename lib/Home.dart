@@ -53,7 +53,7 @@ class _HomeState extends State<Home> {
                       itemBuilder: (context, index) {
                         return ListBook(
                             img:
-                                'https://192.168.111.38:9000/api/v1/cms/categories/${snapshot.data![index]['imageId']}',
+                                'http://192.168.111.38:9000/${snapshot.data![index]['fileName']}',
                             kBuku: snapshot.data![index]['kBuku'],
                             judul: snapshot.data![index]['judul'],
                             kondisi: snapshot.data![index]['kondisi'],
