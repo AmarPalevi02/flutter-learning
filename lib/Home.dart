@@ -16,7 +16,7 @@ class _HomeState extends State<Home> {
   void datas() async {
     setState(() {
       // _data = fetchDatas().getDatas();
-      _data = fetchDatas().getDatas().then((value) {
+      _data = fetchDatas().getDatasCategories().then((value) {
         List<Map<String, dynamic>> data =
             value.map((e) => Map<String, dynamic>.from(e)).toList();
         return data;
@@ -45,6 +45,7 @@ class _HomeState extends State<Home> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   print('Ini Data ${snapshot.data}');
+                  print('images ${snapshot.data}');
                   return Container(
                     width: 400,
                     height: 670,
@@ -53,7 +54,7 @@ class _HomeState extends State<Home> {
                       itemBuilder: (context, index) {
                         return ListBook(
                             img:
-                                'http://192.168.111.38:9000/${snapshot.data![index]['fileName']}',
+                                'http://192.168.76.38:9000/${snapshot.data![index]['image']['fileName']}',
                             kBuku: snapshot.data![index]['kBuku'],
                             judul: snapshot.data![index]['judul'],
                             kondisi: snapshot.data![index]['kondisi'],
