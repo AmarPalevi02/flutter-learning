@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:dio/dio.dart';
+import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uas/api/getData.dart';
@@ -19,44 +19,18 @@ class _FormInputState extends State<FormInput> {
   DateTime? _tglBeli;
   String? _jenis;
   File? _selectedImage;
-  
-Future<void> uploadImage(File imageFile) async {
-  try {
-    String uploadUrl = 'http://192.168.76.38:9000/api/v1/cms/images'; // Gantilah dengan URL upload server Anda
-
-    Dio dio = Dio();
-    FormData formData = FormData.fromMap({
-      'avatar': await MultipartFile.fromFile(imageFile.path, filename: 'image.jpg'),
-    });
-
-    Response response = await dio.post(uploadUrl, data: formData);
-
-    if (response.statusCode == 200) {
-      print('Image uploaded successfully');
-    } else {
-      print('Failed to upload image. Status code: ${response.statusCode}');
-    }
-  } catch (error) {
-    print('Error uploading image: $error');
-  }
-}
-
+  String? _filename;
 
   Future _pickImageFromGallerry() async {
     final returnImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
-    // setState(() {
-    //   _selectedImage = File(returnImage!.path);
-    //   print(_selectedImage);
-    // });
-
-    if (returnImage != null) {
-      File imageFile = File(returnImage.path);
-      await uploadImage(imageFile);
-    }
+    setState(() {
+      _selectedImage = File(returnImage!.path);
+        _filename = p.basename(_selectedImage!.path);
+      print('Selected Image: $_selectedImage');
+      print('Filename: $_filename');
+    });
   }
-
-
 
   TextEditingController kodeBukuController = TextEditingController();
   TextEditingController JudulBukuController = TextEditingController();
@@ -196,20 +170,25 @@ Future<void> uploadImage(File imageFile) async {
                 _selectedImage != null
                     ? Image.file(_selectedImage!)
                     : Text('Pilih image'),
+
                 ElevatedButton(
                     // onPressed: () {
                     //   fetchDatas().addBook();
-                      // goodOrBad: _goodOrBad,
-                      // kode: kodeBukuController.text,
-                      // judul: JudulBukuController.text,
-                      // prodi: _prodi,
-                      // tglBeli: _tglBeli.toString(),
-                      // jenis: _jenis,
-                      // selectedImage: _selectedImage);
-                      // _selectedImage;
+                    //   goodOrBad: _goodOrBad,
+                    //   kode: kodeBukuController.text,
+                    //   judul: JudulBukuController.text,
+                    //   prodi: _prodi,
+                    //   tglBeli: _tglBeli.toString(),
+                    //   jenis: _jenis,
+                    //   selectedImage: _selectedImage);
+                    //   _selectedImage;
                     // },
-                    onPressed: _pickImageFromGallerry,
-                    child: Text('Tambah'))
+                    //  File? selectedImage = await _pickImageFromGallery();
+                    // onPressed: _pickImageFromGallerry,
+                    onPressed: () {
+                      fetchDatas().uploadImage(_selectedImage!);
+                    },
+                    child: Text('ADD')),
               ],
             ),
           ),
