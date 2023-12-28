@@ -110,19 +110,17 @@ class fetchDatas {
     }
   }
 
-  
-
   Future<void> uploadImages(File imageFile) async {
     try {
       Dio dio = Dio();
-
+      String filename = imageFile.path.split('/').last;
       String uploadUrl =
           'http://192.168.20.38:9000/api/v1/cms/images'; // Ganti dengan URL upload image di server Anda
 
       FormData formData = FormData.fromMap({
         'avatar': await MultipartFile.fromFile(
           imageFile.path,
-          filename: 'image.jpg', // Sesuaikan dengan nama file yang diinginkan
+          filename: filename, // Sesuaikan dengan nama file yang diinginkan
         ),
       });
 
@@ -136,14 +134,22 @@ class fetchDatas {
         ),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         print('Image uploaded successfully');
-
         // Dapatkan ID gambar dari respons
-        int imageId = response.data['imageId'];
+        var responseData = response.data['data'];
+        int imageId = responseData['id'];
+
+        print('image id: $imageId');
 
         // Selanjutnya, Anda dapat menggunakan imageId untuk membuat objek Categories
-        await createCategories(imageId, kode: null, judul: null, kondisi: null, jenis: null, prodi: null, tglBeli: null);
+        await createCategories(imageId,
+            kode: null,
+            judul: null,
+            kondisi: null,
+            jenis: null,
+            prodi: null,
+            tglBeli: null);
       } else {
         print('Failed to upload image. Status code: ${response.statusCode}');
       }
@@ -154,8 +160,7 @@ class fetchDatas {
 
 // Fungsi untuk membuat objek Categories
   Future<void> createCategories(int imageId,
-      {
-      required final kondisi,
+      {required final kondisi,
       required final kode,
       required final judul,
       required final prodi,
@@ -165,16 +170,17 @@ class fetchDatas {
       Dio dio = Dio();
 
       String createCategoriesUrl =
-          'http://192.168.20.38:9000/api/v1/cms/categories'; // Ganti dengan URL membuat Categories di server Anda
+          'http://192.168.20.38:9000/api/v1/cms/categories'; 
 
       Map<String, dynamic> categoriesData = {
-        'kBuku': kode, // Sesuaikan dengan data yang diperlukan
+        'kBuku': kode, 
         'judul': judul,
         'kondisi': kondisi,
         'jenis': jenis,
         'prodi': prodi,
         'tglBeli': tglBeli,
-        'imageId': 10, // Gunakan imageId yang didapat setelah mengunggah gambar
+        'imageId':
+            imageId,
       };
 
       Response response = await dio.post(
@@ -187,7 +193,7 @@ class fetchDatas {
         ),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         print('Categories created successfully');
       } else {
         print(
@@ -198,5 +204,64 @@ class fetchDatas {
     }
   }
 
-  
+
+
+
+//============================cobaaa =========================
+Future<Response> uploadImagess(File imageFile) async {
+  try {
+    Dio dio = Dio();
+    String filename = imageFile.path.split('/').last;
+    String uploadUrl =
+        'http://192.168.20.38:9000/api/v1/cms/images';
+
+    FormData formData = FormData.fromMap({
+      'avatar': await MultipartFile.fromFile(
+        imageFile.path,
+        filename: filename, 
+      ),
+    });
+
+    Response response = await dio.post(
+      uploadUrl,
+      data: formData,
+      options: Options(
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
+    );
+
+    return response; 
+
+  } catch (error) {
+    print('Error uploading image: $error');
+    throw error; 
+  }
+}
+
+
+Future<void> deleteDataById(int id) async {
+
+    try {
+      final Dio _dio = Dio();
+      final response = await _dio.delete('http://192.168.20.38:9000/api/v1/cms/categories/$id');
+      
+      if (response.statusCode == 200) {
+        print('Data with ID $id deleted successfully');
+      } else {
+        print('Failed to delete data with ID $id');
+      }
+    } catch (e) {
+      print('Error deleting data: $e');
+    }
+  }
+
+
+
+
+
+
+
+
 }

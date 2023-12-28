@@ -12,6 +12,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   Future<List<Map<String, dynamic>>>? _data;
+  
+
 
   void datas() async {
     setState(() {
@@ -22,7 +24,9 @@ class _HomeState extends State<Home> {
         return data;
       });
     });
+    setState(() {});
   }
+
 
   @override
   void initState() {
@@ -60,8 +64,11 @@ class _HomeState extends State<Home> {
                             kondisi: snapshot.data![index]['kondisi'],
                             jenis: snapshot.data![index]['jenis'],
                             prodi: snapshot.data![index]['prodi'],
-                            tglBeli: snapshot.data![index]['tglBeli']);
+                            tglBeli: snapshot.data![index]['tglBeli'],
+                            btnDelete: snapshot.data![index]['id']
+                            ); 
                       },
+                      
                     ),
                   );
                 } else {

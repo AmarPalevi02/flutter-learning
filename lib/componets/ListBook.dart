@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:uas/api/getData.dart';
 
-Center ListBook({required img, required judul, required kBuku, required tglBeli, required prodi, required kondisi, required jenis}) {
+Center ListBook(
+    {required img,
+    required judul,
+    required kBuku,
+    required tglBeli,
+    required prodi,
+    required kondisi,
+    required jenis,
+    required btnDelete}) {
   return Center(
     child: Padding(
       padding: const EdgeInsets.only(top: 20, bottom: 20),
@@ -57,7 +66,7 @@ Center ListBook({required img, required judul, required kBuku, required tglBeli,
                   ),
                 ),
               ),
-               Container(
+              Container(
                 child: Text(
                   'tanggal beli : ${DateFormat('dd MMM yyyy').format(DateTime.parse(tglBeli.toString()))}',
                   textAlign: TextAlign.justify,
@@ -101,6 +110,14 @@ Center ListBook({required img, required judul, required kBuku, required tglBeli,
                   ),
                 ),
               ),
+              Text('$btnDelete'),
+              ElevatedButton(
+                  onPressed: () {
+                      int? itemId = int.tryParse('$btnDelete');
+                      fetchDatas().deleteDataById(itemId!);
+                      // setState(() {});
+                  },
+                  child: Text('Hapus'))
             ],
           ),
         ),
@@ -108,3 +125,5 @@ Center ListBook({required img, required judul, required kBuku, required tglBeli,
     ),
   );
 }
+
+

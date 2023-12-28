@@ -22,7 +22,7 @@ class _FormInputState extends State<FormInput> {
   File? _selectedImage;
   String? _filename;
 
-  int imageId = 50;
+  int imageId = 80;
 
   Future _pickImageFromGallerry() async {
     final returnImage =
@@ -191,6 +191,43 @@ class _FormInputState extends State<FormInput> {
                           tglBeli: _tglBeli.toString(),
                           jenis: _jenis);
                     },
+
+                    // onPressed: () async {
+                    //   try {
+                    //     // Step 1: Upload Image
+                    //     Response responseImage =
+                    //         await fetchDatas().uploadImagess(_selectedImage!);
+
+                    //     if (responseImage.statusCode == 200) {
+                    //       // Step 2: Get the image ID
+                    //       int imageId = responseImage.data['image']['id'];
+
+                    //       // Step 3: Create Category
+                    //       Response responseCategory = await fetchDatas().createCategoriye(
+                    //         imageId,
+                    //         kode: kodeBukuController.text,
+                    //         judul: JudulBukuController.text,
+                    //         kondisi: _kondisi,
+                    //         prodi: _prodi,
+                    //         tglBeli: _tglBeli.toString(),
+                    //         jenis: _jenis,
+                    //       );
+
+                    //       if (responseCategory.statusCode == 200) {
+                    //         print('Category created successfully');
+                    //       } else {
+                    //         print(
+                    //             'Failed to create category. Status code: ${responseCategory.statusCode}');
+                    //       }
+                    //     } else {
+                    //       print(
+                    //           'Failed to upload image. Status code: ${responseImage.statusCode}');
+                    //     }
+                    //   } catch (error) {
+                    //     print('Error: $error');
+                    //     // Handle the error, show a message to the user, etc.
+                    //   }
+                    // },
                     child: Text('ADD')),
               ],
             ),
