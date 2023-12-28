@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:path/path.dart' as p;
 
 class fetchDatas {
   Future<List<Map<String, dynamic>>> getDatas() async {
@@ -42,40 +44,51 @@ class fetchDatas {
     required final prodi,
     required final tglBeli,
     required final jenis,
-    required final selectedImage,
+    required String kondisi,
   }) async {
     try {
-      String fileName = selectedImage.path.split('avatar').last;
+      // Pemeriksaan nol untuk memastikan nilai tidak null
+      String? formattedDate = tglBeli.toString();
+      String? kondisi = goodOrBad.toString();
+
+      if (kode == null ||
+          judul == null ||
+          prodi == null ||
+          goodOrBad == null ||
+          tglBeli == null ||
+          jenis == null) {
+        print('Parameter cannot be null');
+        return;
+      }
+
       FormData formData = FormData.fromMap({
         'kBuku': kode,
         'judul': judul,
-        'tglBeli': tglBeli,
+        'tglBeli': formattedDate,
         'kondisi': goodOrBad,
         'prodi': prodi,
         'jenis': jenis,
-        'fileName': await MultipartFile.fromFile(selectedImage.path,
-            filename: fileName),
       });
 
       await Dio().post('http://192.168.20.38:9000/api/v1/cms/categories',
           data: formData);
 
-      print(formData);
+      print('Book added successfully');
     } catch (e) {
-      print(e);
+      print('Error: $e');
       return e;
     }
   }
 
-
   Future<void> uploadImage(File imageFile) async {
     try {
-       String filename = imageFile.path.split('/').last;
+      String filename = imageFile.path.split('/').last;
       String uploadUrl = 'http://192.168.20.38:9000/api/v1/cms/images';
 
       Dio dio = Dio();
       FormData formData = FormData.fromMap({
-        'avatar': await MultipartFile.fromFile(imageFile.path, filename: filename),
+        'avatar':
+            await MultipartFile.fromFile(imageFile.path, filename: filename),
       });
       Response response = await dio.post(
         uploadUrl,
@@ -84,7 +97,6 @@ class fetchDatas {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
-          
         ),
       );
 
@@ -97,4 +109,94 @@ class fetchDatas {
       print('Error uploading image: $error');
     }
   }
+
+  
+
+  Future<void> uploadImages(File imageFile) async {
+    try {
+      Dio dio = Dio();
+
+      String uploadUrl =
+          'http://192.168.20.38:9000/api/v1/cms/images'; // Ganti dengan URL upload image di server Anda
+
+      FormData formData = FormData.fromMap({
+        'avatar': await MultipartFile.fromFile(
+          imageFile.path,
+          filename: 'image.jpg', // Sesuaikan dengan nama file yang diinginkan
+        ),
+      });
+
+      Response response = await dio.post(
+        uploadUrl,
+        data: formData,
+        options: Options(
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        print('Image uploaded successfully');
+
+        // Dapatkan ID gambar dari respons
+        int imageId = response.data['imageId'];
+
+        // Selanjutnya, Anda dapat menggunakan imageId untuk membuat objek Categories
+        await createCategories(imageId, kode: null, judul: null, kondisi: null, jenis: null, prodi: null, tglBeli: null);
+      } else {
+        print('Failed to upload image. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error uploading image: $error');
+    }
+  }
+
+// Fungsi untuk membuat objek Categories
+  Future<void> createCategories(int imageId,
+      {
+      required final kondisi,
+      required final kode,
+      required final judul,
+      required final prodi,
+      required final tglBeli,
+      required final jenis}) async {
+    try {
+      Dio dio = Dio();
+
+      String createCategoriesUrl =
+          'http://192.168.20.38:9000/api/v1/cms/categories'; // Ganti dengan URL membuat Categories di server Anda
+
+      Map<String, dynamic> categoriesData = {
+        'kBuku': kode, // Sesuaikan dengan data yang diperlukan
+        'judul': judul,
+        'kondisi': kondisi,
+        'jenis': jenis,
+        'prodi': prodi,
+        'tglBeli': tglBeli,
+        'imageId': 10, // Gunakan imageId yang didapat setelah mengunggah gambar
+      };
+
+      Response response = await dio.post(
+        createCategoriesUrl,
+        data: categoriesData,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        print('Categories created successfully');
+      } else {
+        print(
+            'Failed to create categories. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error creating categories: $error');
+    }
+  }
+
+  
 }

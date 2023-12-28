@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,7 +13,7 @@ class FormInput extends StatefulWidget {
 }
 
 class _FormInputState extends State<FormInput> {
-  String? _goodOrBad;
+  String? _kondisi;
   String? _kode = '';
   String? _judul = '';
   String? _prodi;
@@ -21,12 +22,14 @@ class _FormInputState extends State<FormInput> {
   File? _selectedImage;
   String? _filename;
 
+  int imageId = 50;
+
   Future _pickImageFromGallerry() async {
     final returnImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     setState(() {
       _selectedImage = File(returnImage!.path);
-        _filename = p.basename(_selectedImage!.path);
+      _filename = p.basename(_selectedImage!.path);
       print('Selected Image: $_selectedImage');
       print('Filename: $_filename');
     });
@@ -76,21 +79,21 @@ class _FormInputState extends State<FormInput> {
                   children: <Widget>[
                     Radio(
                         value: 'Baik',
-                        groupValue: _goodOrBad,
+                        groupValue: _kondisi,
                         onChanged: (value) {
                           setState(() {
-                            _goodOrBad = value!;
-                            print(_goodOrBad);
+                            _kondisi = value!;
+                            print(_kondisi);
                           });
                         }),
                     Text('Baik'),
                     Radio(
                         value: 'Rusak',
-                        groupValue: _goodOrBad,
+                        groupValue: _kondisi,
                         onChanged: (value) {
                           setState(() {
-                            _goodOrBad = value!;
-                            print(_goodOrBad);
+                            _kondisi = value!;
+                            print(_kondisi);
                           });
                         }),
                     Text('Rusak'),
@@ -170,23 +173,23 @@ class _FormInputState extends State<FormInput> {
                 _selectedImage != null
                     ? Image.file(_selectedImage!)
                     : Text('Pilih image'),
-
                 ElevatedButton(
-                    // onPressed: () {
-                    //   fetchDatas().addBook();
-                    //   goodOrBad: _goodOrBad,
-                    //   kode: kodeBukuController.text,
-                    //   judul: JudulBukuController.text,
-                    //   prodi: _prodi,
-                    //   tglBeli: _tglBeli.toString(),
-                    //   jenis: _jenis,
-                    //   selectedImage: _selectedImage);
-                    //   _selectedImage;
-                    // },
-                    //  File? selectedImage = await _pickImageFromGallery();
-                    // onPressed: _pickImageFromGallerry,
+                  onPressed: () {
+                    fetchDatas().uploadImage(_selectedImage!);
+                  },
+                  child: Text('Upload image'),
+                ),
+                ElevatedButton(
                     onPressed: () {
-                      fetchDatas().uploadImage(_selectedImage!);
+                      fetchDatas().uploadImages(_selectedImage!);
+                      fetchDatas().createCategories(
+                          imageId,
+                          kode: kodeBukuController.text,
+                          judul: JudulBukuController.text,
+                          kondisi: _kondisi,
+                          prodi: _prodi,
+                          tglBeli: _tglBeli.toString(),
+                          jenis: _jenis);
                     },
                     child: Text('ADD')),
               ],
