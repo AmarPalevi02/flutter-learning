@@ -12,8 +12,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   Future<List<Map<String, dynamic>>>? _data;
-  
-
 
   void datas() async {
     setState(() {

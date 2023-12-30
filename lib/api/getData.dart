@@ -1,23 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:path/path.dart' as p;
 
 class fetchDatas {
-  Future<List<Map<String, dynamic>>> getDatas() async {
-    final result =
-        await Dio().get('http://192.168.20.38:9000/api/v1/cms/draftCategories');
-
-    if (result.statusCode == 200) {
-      final datas = result.data['data'];
-      print(datas);
-      return datas.cast<Map<String, dynamic>>();
-    } else {
-      print('Failed to load data');
-      return [];
-    }
-  }
-
   Future<List<Map<String, dynamic>>> getDatasCategories() async {
     final result =
         await Dio().get('http://192.168.20.38:9000/api/v1/cms/categories');
@@ -34,49 +18,6 @@ class fetchDatas {
     } else {
       print('Failed to load data');
       return [];
-    }
-  }
-
-  Future addBook({
-    required final goodOrBad,
-    required final kode,
-    required final judul,
-    required final prodi,
-    required final tglBeli,
-    required final jenis,
-    required String kondisi,
-  }) async {
-    try {
-      // Pemeriksaan nol untuk memastikan nilai tidak null
-      String? formattedDate = tglBeli.toString();
-      String? kondisi = goodOrBad.toString();
-
-      if (kode == null ||
-          judul == null ||
-          prodi == null ||
-          goodOrBad == null ||
-          tglBeli == null ||
-          jenis == null) {
-        print('Parameter cannot be null');
-        return;
-      }
-
-      FormData formData = FormData.fromMap({
-        'kBuku': kode,
-        'judul': judul,
-        'tglBeli': formattedDate,
-        'kondisi': goodOrBad,
-        'prodi': prodi,
-        'jenis': jenis,
-      });
-
-      await Dio().post('http://192.168.20.38:9000/api/v1/cms/categories',
-          data: formData);
-
-      print('Book added successfully');
-    } catch (e) {
-      print('Error: $e');
-      return e;
     }
   }
 
@@ -204,43 +145,6 @@ class fetchDatas {
     }
   }
 
-
-
-
-//============================cobaaa =========================
-Future<Response> uploadImagess(File imageFile) async {
-  try {
-    Dio dio = Dio();
-    String filename = imageFile.path.split('/').last;
-    String uploadUrl =
-        'http://192.168.20.38:9000/api/v1/cms/images';
-
-    FormData formData = FormData.fromMap({
-      'avatar': await MultipartFile.fromFile(
-        imageFile.path,
-        filename: filename, 
-      ),
-    });
-
-    Response response = await dio.post(
-      uploadUrl,
-      data: formData,
-      options: Options(
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      ),
-    );
-
-    return response; 
-
-  } catch (error) {
-    print('Error uploading image: $error');
-    throw error; 
-  }
-}
-
-
 Future<void> deleteDataById(int id) async {
 
     try {
@@ -256,12 +160,5 @@ Future<void> deleteDataById(int id) async {
       print('Error deleting data: $e');
     }
   }
-
-
-
-
-
-
-
 
 }

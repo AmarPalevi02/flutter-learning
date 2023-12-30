@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:dio/dio.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,7 +21,7 @@ class _FormInputState extends State<FormInput> {
   File? _selectedImage;
   String? _filename;
 
-  int imageId = 80;
+  int imageId = 2;
 
   Future _pickImageFromGallerry() async {
     final returnImage =
@@ -175,7 +174,7 @@ class _FormInputState extends State<FormInput> {
                     : Text('Pilih image'),
                 ElevatedButton(
                   onPressed: () {
-                    fetchDatas().uploadImage(_selectedImage!);
+                    fetchDatas().uploadImages(_selectedImage!);
                   },
                   child: Text('Upload image'),
                 ),
@@ -191,43 +190,6 @@ class _FormInputState extends State<FormInput> {
                           tglBeli: _tglBeli.toString(),
                           jenis: _jenis);
                     },
-
-                    // onPressed: () async {
-                    //   try {
-                    //     // Step 1: Upload Image
-                    //     Response responseImage =
-                    //         await fetchDatas().uploadImagess(_selectedImage!);
-
-                    //     if (responseImage.statusCode == 200) {
-                    //       // Step 2: Get the image ID
-                    //       int imageId = responseImage.data['image']['id'];
-
-                    //       // Step 3: Create Category
-                    //       Response responseCategory = await fetchDatas().createCategoriye(
-                    //         imageId,
-                    //         kode: kodeBukuController.text,
-                    //         judul: JudulBukuController.text,
-                    //         kondisi: _kondisi,
-                    //         prodi: _prodi,
-                    //         tglBeli: _tglBeli.toString(),
-                    //         jenis: _jenis,
-                    //       );
-
-                    //       if (responseCategory.statusCode == 200) {
-                    //         print('Category created successfully');
-                    //       } else {
-                    //         print(
-                    //             'Failed to create category. Status code: ${responseCategory.statusCode}');
-                    //       }
-                    //     } else {
-                    //       print(
-                    //           'Failed to upload image. Status code: ${responseImage.statusCode}');
-                    //     }
-                    //   } catch (error) {
-                    //     print('Error: $error');
-                    //     // Handle the error, show a message to the user, etc.
-                    //   }
-                    // },
                     child: Text('ADD')),
               ],
             ),

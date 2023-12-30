@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:uas/FormInput.dart';
-import 'package:uas/Home.dart';
-
 import 'ButtonNavigasi.dart';
 
 void main() {
