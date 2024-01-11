@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'ButtonNavigasi.dart';
+import 'DrawerNavigasi.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ButtonNavigasi(),
+      home: DrawerNavigation(),
     );
   }
 }

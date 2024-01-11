@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:uas/api/getData.dart';
 
-import 'componets/ListBook.dart';
+import 'componets/ListUsers.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class ShowUsers extends StatefulWidget {
+  const ShowUsers({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<ShowUsers> createState() => _ShowUsersState();
 }
 
-class _HomeState extends State<Home> {
+class _ShowUsersState extends State<ShowUsers> {
   Future<List<Map<String, dynamic>>>? _data;
 
   void datas() async {
     setState(() {
       // _data = fetchDatas().getDatas();
-      _data = fetchDatas().getDatasCategories().then((value) {
+      _data = fetchDatas().getDatasUsers().then((value) {
         List<Map<String, dynamic>> data =
             value.map((e) => Map<String, dynamic>.from(e)).toList();
         return data;
@@ -54,15 +54,13 @@ class _HomeState extends State<Home> {
                     child: ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
-                        return ListBook(
+                        return ListUsers(
                             img:
                                 'http://192.168.20.38:9000/${snapshot.data![index]['image']['fileName']}',
-                            kBuku: snapshot.data![index]['kBuku'],
-                            judul: snapshot.data![index]['judul'],
-                            kondisi: snapshot.data![index]['kondisi'],
-                            jenis: snapshot.data![index]['jenis'],
-                            prodi: snapshot.data![index]['prodi'],
-                            tglBeli: snapshot.data![index]['tglBeli'],
+                            nama: snapshot.data![index]['nama'],
+                            alamat: snapshot.data![index]['alamat'],
+                            tglDaftar: snapshot.data![index]['tglDaftar'],
+                            noTelpon: snapshot.data![index]['noTelpon'],
                             btnDelete: snapshot.data![index]['id']
                             ); 
                       },

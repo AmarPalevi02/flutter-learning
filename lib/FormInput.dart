@@ -12,30 +12,21 @@ class FormInput extends StatefulWidget {
 }
 
 class _FormInputState extends State<FormInput> {
+  String? _noISBN;
+  String? _namaPengarang;
+  DateTime? _tglCetak;
   String? _kondisi;
-  String? _kode = '';
-  String? _judul = '';
-  String? _prodi;
-  DateTime? _tglBeli;
+  int? _harga;
   String? _jenis;
-  File? _selectedImage;
-  String? _filename;
+  int? _hargaProduksi;
+  
 
-  int imageId = 2;
+  TextEditingController noISBNController = TextEditingController();
+  TextEditingController NamaPengarangController = TextEditingController();
+  TextEditingController HargaControler = TextEditingController();
+  TextEditingController HargaProduksiControler = TextEditingController();
 
-  Future _pickImageFromGallerry() async {
-    final returnImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    setState(() {
-      _selectedImage = File(returnImage!.path);
-      _filename = p.basename(_selectedImage!.path);
-      print('Selected Image: $_selectedImage');
-      print('Filename: $_filename');
-    });
-  }
 
-  TextEditingController kodeBukuController = TextEditingController();
-  TextEditingController JudulBukuController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -55,19 +46,34 @@ class _FormInputState extends State<FormInput> {
                   ),
                 ),
                 TextField(
-                  controller: kodeBukuController,
+                  controller: noISBNController,
                   decoration: InputDecoration(
-                    labelText: 'Kode',
-                    hintText: 'Masukan Kode Buku',
+                    labelText: 'noISBN',
+                    hintText: 'Masukan noISBN',
                   ),
                 ),
                 TextField(
-                  controller: JudulBukuController,
+                  controller: NamaPengarangController,
                   decoration: InputDecoration(
-                    labelText: 'Judul',
-                    hintText: 'Masukan Judul Buku',
+                    labelText: 'Nama Pengarang',
+                    hintText: 'Nama Pengarang',
                   ),
                 ),
+                ElevatedButton(
+                    onPressed: () {
+                      showDatePicker(
+                              context: context,
+                              initialDate: _tglCetak ?? DateTime.now(),
+                              firstDate: DateTime(1900),
+                              lastDate: DateTime.now())
+                          .then((date) {
+                        setState(() {
+                          _tglCetak = date!;
+                          print(_tglCetak);
+                        });
+                      });
+                    },
+                    child: Text('Masukan Tanggal Cetak')),
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: Text(
@@ -98,39 +104,14 @@ class _FormInputState extends State<FormInput> {
                     Text('Rusak'),
                   ],
                 ),
-                ElevatedButton(
-                    onPressed: () {
-                      showDatePicker(
-                              context: context,
-                              initialDate: _tglBeli ?? DateTime.now(),
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime.now())
-                          .then((date) {
-                        setState(() {
-                          _tglBeli = date!;
-                          print(_tglBeli);
-                        });
-                      });
-                    },
-                    child: Text('Masukan Tanggal Beli')),
-                DropdownButtonFormField<String>(
-                  value: _prodi,
-                  onChanged: (value) {
-                    setState(() {
-                      _prodi = value!;
-                      print(_prodi);
-                    });
-                  },
-                  items: <String>[
-                    'Teknik Mesin',
-                    'Teknik Industri',
-                    'Teknik Informatika',
-                    'Teknik Sipil'
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem(value: value, child: Text(value));
-                  }).toList(),
-                  decoration: InputDecoration(labelText: 'Prodi'),
+                TextField(
+                  controller: HargaControler,
+                  decoration: InputDecoration(
+                    labelText: 'Harga',
+                    hintText: 'Masukan Harga',
+                  ),
                 ),
+                   
                 DropdownButtonFormField<String>(
                   value: _jenis,
                   onChanged: (value) {
@@ -150,45 +131,25 @@ class _FormInputState extends State<FormInput> {
                   }).toList(),
                   decoration: InputDecoration(labelText: 'Jenis Buku'),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    _pickImageFromGallerry();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                  TextField(
+                  controller: HargaProduksiControler,
+                  decoration: InputDecoration(
+                    labelText: 'Harga produksi',
+                    hintText: 'Masukan Harga produksi',
                   ),
-                  child: Center(
-                    child: Text(
-                      'Pilih Dari Galery',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                _selectedImage != null
-                    ? Image.file(_selectedImage!)
-                    : Text('Pilih image'),
-                ElevatedButton(
-                  onPressed: () {
-                    fetchDatas().uploadImages(_selectedImage!);
-                  },
-                  child: Text('Upload image'),
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      fetchDatas().uploadImages(_selectedImage!);
                       fetchDatas().createCategories(
-                          imageId,
-                          kode: kodeBukuController.text,
-                          judul: JudulBukuController.text,
+                          noISBN: noISBNController.text,
+                          namaPengarang: NamaPengarangController.text,
+                          tglCetak: _tglCetak.toString(),
                           kondisi: _kondisi,
-                          prodi: _prodi,
-                          tglBeli: _tglBeli.toString(),
-                          jenis: _jenis);
+                          harga: HargaControler.text,
+                          jenis: _jenis,
+                          hargaProduksi: HargaProduksiControler.text
+                          );
+                          
                     },
                     child: Text('ADD')),
               ],

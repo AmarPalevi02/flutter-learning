@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uas/api/getData.dart';
 
-Center ListBook(
-    {required img,
-    required judul,
-    required kBuku,
-    required tglBeli,
-    required prodi,
-    required kondisi,
-    required jenis,
+Center ListUsers(
+    {
+    required img,
+    required nama,
+    required alamat,
+    required tglDaftar,
+    required noTelpon,
     required btnDelete}) {
   return Center(
     child: Padding(
@@ -46,7 +45,7 @@ Center ListBook(
               Padding(
                 padding: EdgeInsets.only(left: 35, right: 35),
                 child: Text(
-                  'kode: $kBuku',
+                  'Nama: $nama',
                   textAlign: TextAlign.justify,
                   style: TextStyle(
                     fontSize: 20,
@@ -57,7 +56,7 @@ Center ListBook(
               ),
               Container(
                 child: Text(
-                  'judul: $judul',
+                  'alamat: $alamat',
                   textAlign: TextAlign.justify,
                   style: TextStyle(
                     fontSize: 20,
@@ -68,7 +67,7 @@ Center ListBook(
               ),
               Container(
                 child: Text(
-                  'tanggal beli : ${DateFormat('dd MMM yyyy').format(DateTime.parse(tglBeli.toString()))}',
+                  'tanggal beli : ${DateFormat('dd MMM yyyy').format(DateTime.parse(tglDaftar.toString()))}',
                   textAlign: TextAlign.justify,
                   style: TextStyle(
                     fontSize: 20,
@@ -79,7 +78,7 @@ Center ListBook(
               ),
               Container(
                 child: Text(
-                  'Prodi : $prodi',
+                  'Nomor Telpon : $noTelpon',
                   textAlign: TextAlign.justify,
                   style: TextStyle(
                     fontSize: 20,
@@ -88,33 +87,11 @@ Center ListBook(
                   ),
                 ),
               ),
-              Container(
-                child: Text(
-                  'Kondisi : $kondisi',
-                  textAlign: TextAlign.justify,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              Container(
-                child: Text(
-                  'Jenis : $jenis',
-                  textAlign: TextAlign.justify,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              Text('$btnDelete'),
+              
               ElevatedButton(
                   onPressed: () {
                       int? itemId = int.tryParse('$btnDelete');
-                      fetchDatas().deleteDataById(itemId!);
+                      fetchDatas().deleteDataUser(itemId!);
                       // setState(() {});
                   },
                   child: Text('Hapus'))

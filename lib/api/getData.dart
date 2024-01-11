@@ -21,33 +21,64 @@ class fetchDatas {
     }
   }
 
-  Future<void> uploadImage(File imageFile) async {
+  Future<void> createCategories(
+      {required final noISBN,
+      required final namaPengarang,
+      required final tglCetak,
+      required final kondisi,
+      required final harga,
+      required final jenis,
+      required final hargaProduksi
+      }) async {
     try {
-      String filename = imageFile.path.split('/').last;
-      String uploadUrl = 'http://192.168.20.38:9000/api/v1/cms/images';
-
       Dio dio = Dio();
-      FormData formData = FormData.fromMap({
-        'avatar':
-            await MultipartFile.fromFile(imageFile.path, filename: filename),
-      });
+
+      String createCategoriesUrl =
+          'http://192.168.20.38:9000/api/v1/cms/categories'; 
+
+      Map<String, dynamic> categoriesData = {
+        'noISBN': noISBN, 
+        'namaPengarang': namaPengarang,
+        'tglCetak': tglCetak,
+        'kondisi': kondisi,
+        'harga' : harga,
+        'jenis': jenis,
+        'hargaProduksi': hargaProduksi,
+      };
+
       Response response = await dio.post(
-        uploadUrl,
-        data: formData,
+        createCategoriesUrl,
+        data: categoriesData,
         options: Options(
           headers: {
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': 'application/json',
           },
         ),
       );
 
-      if (response.statusCode == 200) {
-        print('Image uploaded successfully');
+      if (response.statusCode == 201) {
+        print('Categories created successfully');
       } else {
-        print('Failed to upload image. Status code: ${response.statusCode}');
+        print(
+            'Failed to create categories. Status code: ${response.statusCode}');
       }
     } catch (error) {
-      print('Error uploading image: $error');
+      print('Error creating categories: $error');
+    }
+  }
+
+Future<void> deleteDataById(int id) async {
+    try {
+      final Dio _dio = Dio();
+      final response = await _dio.delete('http://192.168.20.38:9000/api/v1/cms/categories/$id');
+      
+      if (response.statusCode == 200) {
+        print('Data with ID $id deleted successfully');
+      } else {
+        print('Failed to delete data with ID $id');
+      }
+    } catch (e) {
+      print('Error deleting data: $e');
     }
   }
 
@@ -56,12 +87,12 @@ class fetchDatas {
       Dio dio = Dio();
       String filename = imageFile.path.split('/').last;
       String uploadUrl =
-          'http://192.168.20.38:9000/api/v1/cms/images'; // Ganti dengan URL upload image di server Anda
+          'http://192.168.20.38:9000/api/v1/cms/images'; 
 
       FormData formData = FormData.fromMap({
         'avatar': await MultipartFile.fromFile(
           imageFile.path,
-          filename: filename, // Sesuaikan dengan nama file yang diinginkan
+          filename: filename, 
         ),
       });
 
@@ -84,13 +115,11 @@ class fetchDatas {
         print('image id: $imageId');
 
         // Selanjutnya, Anda dapat menggunakan imageId untuk membuat objek Categories
-        await createCategories(imageId,
-            kode: null,
-            judul: null,
-            kondisi: null,
-            jenis: null,
-            prodi: null,
-            tglBeli: null);
+        await createUsers(imageId,
+            nama: null,
+           alamat: null,
+            tglDaftar: null,
+            noTelpon: null);
       } else {
         print('Failed to upload image. Status code: ${response.statusCode}');
       }
@@ -99,27 +128,24 @@ class fetchDatas {
     }
   }
 
-// Fungsi untuk membuat objek Categories
-  Future<void> createCategories(int imageId,
-      {required final kondisi,
-      required final kode,
-      required final judul,
-      required final prodi,
-      required final tglBeli,
-      required final jenis}) async {
+
+  Future<void> createUsers(int imageId,
+      {required final nama,
+      required final alamat,
+      required final tglDaftar,
+      required final noTelpon,
+      }) async {
     try {
       Dio dio = Dio();
 
       String createCategoriesUrl =
-          'http://192.168.20.38:9000/api/v1/cms/categories'; 
+          'http://192.168.20.38:9000/api/v1/cms/user'; 
 
       Map<String, dynamic> categoriesData = {
-        'kBuku': kode, 
-        'judul': judul,
-        'kondisi': kondisi,
-        'jenis': jenis,
-        'prodi': prodi,
-        'tglBeli': tglBeli,
+        'nama': nama, 
+        'alamat': alamat,
+        'tglDaftar': tglDaftar,
+        'noTelpon': noTelpon,
         'imageId':
             imageId,
       };
@@ -145,11 +171,29 @@ class fetchDatas {
     }
   }
 
-Future<void> deleteDataById(int id) async {
+   Future<List<Map<String, dynamic>>> getDatasUsers() async {
+    final result =
+        await Dio().get('http://192.168.20.38:9000/api/v1/cms/user');
+    if (result.statusCode == 200) {
+      final datas = result.data['data'];
 
+      print(datas);
+      return datas.cast<Map<String, dynamic>>();
+    }
+    if (result.statusCode == 200) {
+      final datas = result.data['data']['images'];
+      print(datas);
+      return datas.cast<Map<String, dynamic>>();
+    } else {
+      print('Failed to load data');
+      return [];
+    }
+  }
+
+  Future<void> deleteDataUser(int id) async {
     try {
       final Dio _dio = Dio();
-      final response = await _dio.delete('http://192.168.20.38:9000/api/v1/cms/categories/$id');
+      final response = await _dio.delete('http://192.168.20.38:9000/api/v1/cms/user/$id');
       
       if (response.statusCode == 200) {
         print('Data with ID $id deleted successfully');
